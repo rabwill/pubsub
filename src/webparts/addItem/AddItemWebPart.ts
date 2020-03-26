@@ -28,7 +28,7 @@ export default class AddItemWebPart extends BaseClientSideWebPart <IAddItemWebPa
     const element: React.ReactElement<IAddItemProps> = React.createElement(
       AddItem,
       {
-        items: []
+        items: getItems()
       }
     );
 

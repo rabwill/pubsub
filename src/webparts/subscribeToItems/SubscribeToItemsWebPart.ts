@@ -10,7 +10,7 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'SubscribeToItemsWebPartStrings';
 import SubscribeToItems from './components/SubscribeToItems';
 import { ISubscribeToItemsProps } from './components/ISubscribeToItemsProps';
-import DataService,{getItems}from '../../services/dataService';
+import DataService, { getItems } from '../../services/dataService';
 
 export interface ISubscribeToItemsWebPartProps {
   description: string;
@@ -19,14 +19,16 @@ export interface ISubscribeToItemsWebPartProps {
 export default class SubscribeToItemsWebPart extends BaseClientSideWebPart <ISubscribeToItemsWebPartProps> {
   public _svc:DataService;
   public async onInit(): Promise<void> {
+   
     this._svc=new DataService()
   }
 
-  public render(): void {
+  public render(data?:any): void {
+    console.log(data)
     const element: React.ReactElement<ISubscribeToItemsProps> = React.createElement(
       SubscribeToItems,
       {
-        items: []
+        items: getItems()
       }
     );
 

@@ -2,13 +2,14 @@ import * as React from 'react';
 import styles from './AddItem.module.scss';
 import { IAddItemProps } from './IAddItemProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import DataService,{subscribe, unsubscribe} from '../../../services/dataService'
+import DataService from '../../../services/dataService'
+import { Idataservice } from '../../../services/Idataservice';
 export interface IAddItemState {
   items: string[];
 }
 
 export default class AddItem extends React.Component<IAddItemProps,IAddItemState> { 
-  public _svc:DataService;
+  public _svc:Idataservice;
   constructor(props: IAddItemProps, state: IAddItemState) {  
     super(props);  
   
@@ -18,7 +19,7 @@ export default class AddItem extends React.Component<IAddItemProps,IAddItemState
     this.addItemsIntoStorage=this.addItemsIntoStorage.bind(this);
     this.renderItems=this.renderItems.bind(this);
     this._svc=new DataService()
-    subscribe(this.renderItems)
+    this._svc.subscribe(this.renderItems)
   }  
 
   public componentDidMount(): void { 
@@ -33,16 +34,17 @@ export default class AddItem extends React.Component<IAddItemProps,IAddItemState
     this.setState({items:data});
   }
   public componentWillUnmount(): void{
-    unsubscribe(this.renderItems)
+    this._svc.unsubscribe(this.renderItems)
   }
 
   public addItemsIntoStorage():void{   
     this._svc.addItem(new Date().toString());   
+  
     }
   
 
   public render(): React.ReactElement<IAddItemProps> {
-  console.log(this.state.items)
+ 
     return (
       <div className={ styles.addItem }>
         <div className={ styles.container }>

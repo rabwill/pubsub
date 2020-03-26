@@ -2,38 +2,37 @@ import * as React from 'react';
 import styles from './SubscribeToItems.module.scss';
 import { ISubscribeToItemsProps } from './ISubscribeToItemsProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import DataService, { subscribe, unsubscribe } from '../../../services/dataService'
+import DataService from '../../../services/dataService'
+import { Idataservice } from '../../../services/Idataservice';
 export interface ISubscribeToItemsState {
   items: string[];
 }
 export default class SubscribeToItems extends React.Component<ISubscribeToItemsProps, ISubscribeToItemsState> {
-  private _svc: DataService;
+  private _svc: Idataservice;
   constructor(props: ISubscribeToItemsProps, state: ISubscribeToItemsState) {  
     super(props); 
     this.state = {       
       items: []  
     };  
-    // this.renderItemsSub=this.renderItemsSub.bind(this);
-    this._svc=new DataService()
     this.renderItemsSub=this.renderItemsSub.bind(this);
-    try{
-    subscribe(this.renderItemsSub)
-    }catch(e){
-      console.log('error'+e)
-    }
+    this._svc=new DataService()
+    this._svc.subscribe(this.renderItemsSub)
+  
+  
   }  
 
   public componentDidMount(): void {  
+  
     this.setState({items:this.props.items})
 }
 public  renderItemsSub(data:any):void{
   this.setState({items:data});
 }
 public componentWillUnmount(): void{
-  unsubscribe(this.renderItemsSub)
+  this._svc.unsubscribe(this.renderItemsSub)
 }
   public render(): React.ReactElement<ISubscribeToItemsProps> {    
-    console.log(this.state.items)
+   
     return (
       <div className={ styles.subscribeToItems }>
         <div className={ styles.container }>

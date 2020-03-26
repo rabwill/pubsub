@@ -1,34 +1,37 @@
+import { Idataservice } from "./Idataservice";
+
 let items = [];
-let observers = [];
-export default class DataService {
+
+export default class DataService implements Idataservice {
+  public observers:((data:string[])=>any)[] = [];
   constructor() {
+   this.observers=[]
     const allItems = JSON.parse(localStorage.getItem('myItems'));
     if (Array.isArray(allItems)) {
         items = allItems;
-        notify(items);
     }     
   }
   public addItem(item) {
     items.push(item);
     localStorage.setItem('myItems', JSON.stringify(items));
-    notify(items);
+    this.notify(items);
   }
+  public subscribe(callbackFunction:(data:string[])=>any):void { 
+    this.observers.push(callbackFunction);
+ }
+ 
+ public unsubscribe(callbackFunction:(data:string[])=>any):void {
+   this.observers.filter(o => o !== callbackFunction);
+ }
+ public notify(data?:string[]) {
+   this.observers.forEach(o => {
+     o(data);
+   });
+ }
 
 }
 
-export function subscribe(callbackFunction:(data:string[])=>any):void {
-  console.log(observers);
-   observers.push(callbackFunction);
-}
 
-export function unsubscribe(callbackFunction:(data:string[])=>any):void {
-  observers.filter(o => o !== callbackFunction);
-}
-export function notify(data?:string[]) {
-  observers.forEach(o => {
-    o(data);
-  });
-}
 export function  getItems():any {
   return items;
 }
