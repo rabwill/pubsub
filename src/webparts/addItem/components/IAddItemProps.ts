@@ -1,3 +1,5 @@
+import { IUpdate } from "../../../services/IUpdate";
+
 export interface IAddItemProps {
-  items: string[];
+  items: IUpdate;
 }

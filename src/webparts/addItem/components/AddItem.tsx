@@ -2,36 +2,34 @@ import * as React from 'react';
 import styles from './AddItem.module.scss';
 import { IAddItemProps } from './IAddItemProps';
 import { escape } from '@microsoft/sp-lodash-subset';
-import DataService from '../../../services/dataService'
+import  MyService, { DataService,getItems } from '../../../services/dataService'
 import { Idataservice } from '../../../services/Idataservice';
+import { IUpdate } from '../../../services/IUpdate';
 export interface IAddItemState {
   items: string[];
 }
 
 export default class AddItem extends React.Component<IAddItemProps,IAddItemState> { 
   public _svc:Idataservice;
+  
   constructor(props: IAddItemProps, state: IAddItemState) {  
     super(props);  
-  
+    this.addItemsIntoStorage=this.addItemsIntoStorage.bind(this);
+    this.renderItems=this.renderItems.bind(this);
+    this._svc= MyService()
+    this._svc.subscribe(this.renderItems)
     this.state = {       
       items: []  
     };  
-    this.addItemsIntoStorage=this.addItemsIntoStorage.bind(this);
-    this.renderItems=this.renderItems.bind(this);
-    this._svc=new DataService()
-    this._svc.subscribe(this.renderItems)
+ 
   }  
 
   public componentDidMount(): void { 
-    var it=this.props.items;
-    if(it){
-      this.renderItems(it);
-    }
-    
+    this.setState({items: this.props.items});
 
   }
-  public  renderItems(data:any):void{   
-    this.setState({items:data});
+  public  async renderItems(data:IUpdate):Promise<void>{   
+    this.setState({items: data.items});
   }
   public componentWillUnmount(): void{
     this._svc.unsubscribe(this.renderItems)

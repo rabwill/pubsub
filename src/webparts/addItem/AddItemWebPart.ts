@@ -10,7 +10,8 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'AddItemWebPartStrings';
 import AddItem from './components/AddItem';
 import { IAddItemProps } from './components/IAddItemProps';
-import DataService,{getItems} from '../../services/dataService';
+import MyService, {DataService,getItems} from '../../services/dataService';
+import { Idataservice } from '../../services/Idataservice';
 
 export interface IAddItemWebPartProps {
   description: string;
@@ -18,9 +19,9 @@ export interface IAddItemWebPartProps {
 
 export default class AddItemWebPart extends BaseClientSideWebPart <IAddItemWebPartProps> {
 
-  public _svc:DataService;
+  public _svc:Idataservice;
   public async onInit(): Promise<void> {
-    this._svc=new DataService()
+    this._svc= MyService()
   }
 
   public async render(): Promise<void> {
@@ -28,7 +29,7 @@ export default class AddItemWebPart extends BaseClientSideWebPart <IAddItemWebPa
     const element: React.ReactElement<IAddItemProps> = React.createElement(
       AddItem,
       {
-        items: getItems()
+        items: await getItems()
       }
     );
 

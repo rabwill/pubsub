@@ -1,9 +1,33 @@
 import { Idataservice } from "./Idataservice";
+import { MemoryCache } from "./MemoryCache";
+import { IUpdate } from "./IUpdate";
 
-let items = [];
-
-export default class DataService implements Idataservice {
-  public observers:((data:string[])=>any)[] = [];
+let items:any=[]
+const asyncLocalStorage = {
+  setItem: function (key, value) {
+      return Promise.resolve().then(function () {
+          localStorage.setItem(key, value);
+      });
+  },
+  getItem: function (key) {
+      return Promise.resolve().then(function () {
+          return localStorage.getItem(key);
+      });
+  }
+};
+export default function MyService(): Idataservice {
+  const cacheKey = "SubService";
+  let mm:MemoryCache =new MemoryCache();
+  let service = mm.get(cacheKey);  
+  if(!service){
+    service =new DataService();
+    mm.set(cacheKey, service, 60*24*7);
+  } 
+     
+  return service;
+}
+export  class DataService implements Idataservice {
+  public observers:((update:IUpdate)=>any)[] = [];
   constructor() {
    this.observers=[]
     const allItems = JSON.parse(localStorage.getItem('myItems'));
@@ -16,14 +40,14 @@ export default class DataService implements Idataservice {
     localStorage.setItem('myItems', JSON.stringify(items));
     this.notify(items);
   }
-  public subscribe(callbackFunction:(data:string[])=>any):void { 
+  public subscribe(callbackFunction:(update:IUpdate)=>any):void { 
     this.observers.push(callbackFunction);
  }
  
- public unsubscribe(callbackFunction:(data:string[])=>any):void {
+ public unsubscribe(callbackFunction:(update:IUpdate)=>any):void {
    this.observers.filter(o => o !== callbackFunction);
  }
- public notify(data?:string[]) {
+ public notify(data?:IUpdate) {
    this.observers.forEach(o => {
      o(data);
    });
@@ -32,6 +56,6 @@ export default class DataService implements Idataservice {
 }
 
 
-export function  getItems():any {
+export function  getItems():IUpdate {
   return items;
 }
