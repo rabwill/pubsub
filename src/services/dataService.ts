@@ -1,5 +1,5 @@
 import { Idataservice } from "./Idataservice";
-import { MemoryCache } from "./MemoryCache";
+import { StorageCache } from "./StorageCache";
 import { IUpdate } from "./IUpdate";
 
 let items:any=[]
@@ -17,7 +17,7 @@ const asyncLocalStorage = {
 };
 export default function MyService(): Idataservice {
   const cacheKey = "SubService";
-  let mm:MemoryCache =new MemoryCache();
+  let mm:StorageCache =new StorageCache();
   let service = mm.get(cacheKey);  
   if(!service){
     service =new DataService();
