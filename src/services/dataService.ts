@@ -2,19 +2,7 @@ import { Idataservice } from "./Idataservice";
 import { StorageCache } from "./StorageCache";
 import { IUpdate } from "./IUpdate";
 
-let items:any=[]
-const asyncLocalStorage = {
-  setItem: function (key, value) {
-      return Promise.resolve().then(function () {
-          localStorage.setItem(key, value);
-      });
-  },
-  getItem: function (key) {
-      return Promise.resolve().then(function () {
-          return localStorage.getItem(key);
-      });
-  }
-};
+let items:any=[];
 export default function MyService(): Idataservice {
   const cacheKey = "SubService";
   let mm:StorageCache =new StorageCache();
