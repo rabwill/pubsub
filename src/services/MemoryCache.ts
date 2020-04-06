@@ -5,7 +5,7 @@ interface IStoredValue {
 
 export  class MemoryCache {
   
-    private prefix: string = 'ANZ_';
+    private prefix: string = 'SAMPLE-SUB_';
     private postfix: string = '';
     private expirationMinutes: number = 15;
     private storage: any;
